@@ -1,4 +1,4 @@
-.PHONY: qa
+.PHONY: test clean
 
 run ?= ".*"
 
