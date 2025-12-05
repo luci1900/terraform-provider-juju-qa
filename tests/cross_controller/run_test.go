@@ -1,4 +1,4 @@
-package provider
+package qa
 
 import (
 	"os/exec"
@@ -18,7 +18,7 @@ func TestQA_CrossController(t *testing.T) {
 
 	consumingTfOpts := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "./consuming",
-		EnvVars:      utils.GetControllerEnv(t, "tfqa"),
+		EnvVars:      utils.GetControllerEnv(t, utils.DefaultControllerName),
 		Vars:         utils.GetOfferingControllerVars(t, "tfqa-offering"),
 		Reconfigure:  true,
 	})

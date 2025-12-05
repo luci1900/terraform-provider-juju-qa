@@ -9,6 +9,7 @@ resource "juju_model" "openfga_model" {
 
 resource "juju_application" "openfga" {
   name  = "iam"
+  model_uuid = juju_model.openfga_model.uuid
   trust = true
   units = 1
 
@@ -17,18 +18,19 @@ resource "juju_application" "openfga" {
     channel = "latest/edge"
     base    = "ubuntu@22.04"
   }
-  model_uuid = juju_model.openfga_model.uuid
 }
 
 resource "juju_offer" "openfga" {
+  model_uuid       = juju_model.openfga_model.uuid
   depends_on = [juju_application.openfga]
 
   application_name = juju_application.openfga.name
   endpoints        = ["openfga"]
-  model_uuid       = juju_model.openfga_model.uuid
 }
 
 resource "juju_integration" "db_integration" {
+  model_uuid = juju_model.openfga_model.uuid
+
   application {
     offer_url = juju_offer.database.url
   }
@@ -37,5 +39,4 @@ resource "juju_integration" "db_integration" {
     name     = juju_application.openfga.name
     endpoint = "database"
   }
-  model_uuid = juju_model.openfga_model.uuid
 }

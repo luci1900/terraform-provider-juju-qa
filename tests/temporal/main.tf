@@ -25,6 +25,7 @@ resource "juju_model" "this" {
 # application and integration top-level
 resource "juju_application" "temporal_k8s" {
   name = "temporal"
+  model_uuid = resource.juju_model.this.uuid
 
   charm {
     name = "temporal-k8s"
@@ -33,11 +34,12 @@ resource "juju_application" "temporal_k8s" {
   config = {
     num-history-shards = 2
   }
-  model_uuid = resource.juju_model.this.uuid
 }
 
 
 resource "juju_integration" "temporal_db" {
+  model_uuid = resource.juju_model.this.uuid
+ 
   application {
     offer_url = juju_offer.database.url
   }
@@ -46,10 +48,11 @@ resource "juju_integration" "temporal_db" {
     name     = juju_application.temporal_k8s.name
     endpoint = "db"
   }
-  model_uuid = resource.juju_model.this.uuid
 }
 
 resource "juju_integration" "temporal_visibility_db" {
+    model_uuid = resource.juju_model.this.uuid
+
   application {
     offer_url = juju_offer.database.url
   }
@@ -58,16 +61,15 @@ resource "juju_integration" "temporal_visibility_db" {
     name     = juju_application.temporal_k8s.name
     endpoint = "visibility"
   }
-  model_uuid = resource.juju_model.this.uuid
 }
 
 resource "juju_application" "temporal_admin_k8s" {
   name = "temporal-admin"
+  model_uuid = juju_model.this.uuid
 
   charm {
     name = "temporal-admin-k8s"
   }
-  model_uuid = juju_model.this.uuid
 }
 
 resource "juju_integration" "temporal_admin" {
@@ -87,14 +89,15 @@ resource "juju_integration" "temporal_admin" {
 
 resource "juju_application" "temporal_k8s_ui" {
   name = "temporalui"
+  model_uuid = resource.juju_model.this.uuid
 
   charm {
     name = "temporal-ui-k8s"
   }
-  model_uuid = resource.juju_model.this.uuid
 }
 
 resource "juju_integration" "temporal_ui" {
+  model_uuid = juju_model.this.uuid
 
   application {
     name     = juju_application.temporal_k8s.name
@@ -105,5 +108,4 @@ resource "juju_integration" "temporal_ui" {
     name     = juju_application.temporal_k8s_ui.name
     endpoint = "ui"
   }
-  model_uuid = juju_model.this.uuid
 }

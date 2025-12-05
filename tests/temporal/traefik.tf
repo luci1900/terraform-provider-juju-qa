@@ -9,6 +9,7 @@ resource "juju_model" "traefik" {
 
 resource "juju_application" "traefik" {
   name  = "ingress"
+  model_uuid = juju_model.traefik.uuid
   trust = true
   units = 1
 
@@ -22,14 +23,13 @@ resource "juju_application" "traefik" {
     external_hostname = ""
     routing_mode      = "path"
   }
-  model_uuid = juju_model.traefik.uuid
 }
 
 resource "juju_offer" "ingress" {
+  model_uuid       = juju_model.traefik.uuid
   depends_on = [juju_application.traefik]
 
   application_name = juju_application.traefik.name
   name             = "${juju_application.traefik.name}-ingress"
   endpoints        = ["ingress"]
-  model_uuid       = juju_model.traefik.uuid
 }

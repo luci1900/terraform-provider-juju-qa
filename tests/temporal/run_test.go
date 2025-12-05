@@ -1,4 +1,4 @@
-package provider
+package qa
 
 import (
 	"os/exec"
@@ -12,7 +12,7 @@ func TestQA_Temporal(t *testing.T) {
 	// arrange
 	tfOpts := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: ".",
-		EnvVars:      utils.GetControllerEnv(t, "tfqa"),
+		EnvVars:      utils.GetControllerEnv(t, utils.DefaultControllerName),
 		Reconfigure:  true,
 	})
 
