@@ -25,3 +25,5 @@ modules-dev/
 vendor/
 __debug_bin*
 test.env
+test_results.xml
+test_results.raw
