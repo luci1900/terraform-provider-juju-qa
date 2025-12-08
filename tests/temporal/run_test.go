@@ -14,6 +14,7 @@ func TestQA_Temporal(t *testing.T) {
 		TerraformDir: ".",
 		EnvVars:      utils.GetControllerEnv(t, utils.DefaultControllerName),
 		Reconfigure:  true,
+		NoColor:      true,
 	})
 
 	// act
