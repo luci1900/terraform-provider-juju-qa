@@ -1,8 +1,13 @@
 #!/bin/bash
+set -x
 
 sudo snap install go --classic
 
 go install github.com/tebeka/go2xunit@v1.4.10
+
+juju bootstrap $JUJU_CLOUD tfqa
+juju bootstrap $JUJU_CLOUD tfqa-offering
+trap 'juju kill-controller --no-prompt tfqa-offering && juju kill-controller --no-prompt tfqa' EXIT
 
 go test -v -timeout=60m ./... |& tee test_results.raw
 

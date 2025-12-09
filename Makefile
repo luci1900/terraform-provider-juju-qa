@@ -9,4 +9,4 @@ clean:
 	find . -name "terraform.tfstate*" -delete
 	find . -name ".terraform.lock.hcl" -delete
 	find . -type d -name ".terraform" -exec rm -rf {} +
-	rm test_results.xm. test_results.raw
+	rm test_results.xml test_results.raw
