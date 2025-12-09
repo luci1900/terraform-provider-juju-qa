@@ -12,7 +12,7 @@ func TestQA_StoragePool(t *testing.T) {
 	// arrange
 	tfOpts := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: ".",
-		EnvVars:      utils.GetControllerEnv(t, utils.DefaultControllerName),
+		EnvVars:      utils.GetControllerInfo(t, utils.DefaultControllerName).Env(),
 		Reconfigure:  true,
 		NoColor:      true,
 	})
