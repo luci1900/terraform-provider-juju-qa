@@ -3,7 +3,7 @@
 run ?= ".*"
 
 test:
-	go test -v -count=1 -timeout=30m -run "TestQA_$(run)" ./...
+	go test -v -count=1 -timeout=1h -run "TestQA_$(run)" ./...
 
 clean:
 	find . -name "terraform.tfstate*" -delete

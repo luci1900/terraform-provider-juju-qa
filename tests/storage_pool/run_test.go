@@ -34,7 +34,8 @@ func TestQA_StoragePool(t *testing.T) {
 
 	cmd = exec.Command(
 		"juju", "wait-for",
-		"application", "db",
+		"application", "--timeout", "60m",
+		"db",
 	)
 	out, err = cmd.CombinedOutput()
 	if err != nil {

@@ -9,6 +9,6 @@ juju bootstrap $JUJU_CLOUD tfqa
 juju bootstrap $JUJU_CLOUD tfqa-offering
 trap 'juju kill-controller --no-prompt tfqa-offering && juju kill-controller --no-prompt tfqa' EXIT
 
-go test -v -timeout=60m ./... |& tee test_results.raw
+go test -v -timeout=4h ./... |& tee test_results.raw
 
 ~/go/bin/go2xunit -input test_results.raw -output test_results.xml

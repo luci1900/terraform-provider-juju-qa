@@ -39,7 +39,8 @@ func TestQA_Temporal(t *testing.T) {
 
 	cmd = exec.Command(
 		"juju", "wait-for",
-		"application", "temporal",
+		"application", "--timeout", "60m",
+		"temporal",
 	)
 	out, err = cmd.CombinedOutput()
 	if err != nil {

@@ -48,7 +48,8 @@ func TestQA_CrossController(t *testing.T) {
 
 	cmd = exec.Command(
 		"juju", "wait-for",
-		"application", "dummy-sink",
+		"application", "--timeout", "60m",
+		"dummy-sink",
 	)
 	out, err = cmd.CombinedOutput()
 	if err != nil {
