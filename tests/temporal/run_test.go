@@ -9,10 +9,15 @@ import (
 )
 
 func TestQA_Temporal(t *testing.T) {
+	info := utils.GetControllerInfo(t, utils.DefaultControllerName)
+	if info.CloudType != "k8s" {
+		t.Skip("Skipping private registry test on non-microk8s cloud")
+	}
+
 	// arrange
 	tfOpts := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: ".",
-		EnvVars:      utils.GetControllerInfo(t, utils.DefaultControllerName).Env(),
+		EnvVars:      info.Env(),
 		Reconfigure:  true,
 		NoColor:      true,
 	})
