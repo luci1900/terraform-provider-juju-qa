@@ -11,7 +11,7 @@ import (
 func TestQA_Temporal(t *testing.T) {
 	info := utils.GetControllerInfo(t, utils.DefaultControllerName)
 	if info.CloudType != "k8s" {
-		t.Skip("Skipping private registry test on non-microk8s cloud")
+		t.Skip("Skipping test on non-k8s cloud")
 	}
 
 	// arrange

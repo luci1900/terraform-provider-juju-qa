@@ -10,20 +10,20 @@ import (
 
 func TestQA_CrossController(t *testing.T) {
 	// arrange
-	main := utils.GetControllerInfo(t, utils.DefaultControllerName)
-	offering := utils.GetControllerInfo(t, "tfqa-offering")
+	consumingInfo := utils.GetControllerInfo(t, utils.DefaultControllerName)
+	offeringInfo := utils.GetControllerInfo(t, "tfqa-offering")
 
 	offeringTfOpts := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "./offering",
-		EnvVars:      offering.Env(),
+		EnvVars:      offeringInfo.Env(),
 		Reconfigure:  true,
 		NoColor:      true,
 	})
 
 	consumingTfOpts := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "./consuming",
-		EnvVars:      main.Env(),
-		Vars:         offering.OfferingVars(),
+		EnvVars:      consumingInfo.Env(),
+		Vars:         offeringInfo.OfferingVars(),
 		Reconfigure:  true,
 		NoColor:      true,
 	})
