@@ -41,4 +41,5 @@ resource "juju_application" "this" {
   storage_directives = {
     "pgdata" = "1M,${juju_storage_pool.this.name}"
   }
+  constraints = "arch=${var.arch} tags=${var.tags}"
 }

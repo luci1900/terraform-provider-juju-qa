@@ -24,6 +24,7 @@ resource "juju_application" "postgresql" {
     plugin_uuid_ossp_enable = true
     plugin_btree_gin_enable = true
   }
+  constraints = "arch=${var.arch} tags=${var.tags}"
 }
 
 resource "juju_offer" "database" {

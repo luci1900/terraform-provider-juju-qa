@@ -44,4 +44,5 @@ resource "juju_application" "this" {
   config = {
     juju-external-hostname = "myhostname"
   }
+  constraints = "arch=${var.arch} tags=${var.tags}"
 }

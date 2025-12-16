@@ -34,6 +34,7 @@ resource "juju_application" "temporal_k8s" {
   config = {
     num-history-shards = 2
   }
+  constraints = "arch=${var.arch} tags=${var.tags}"
 }
 
 
@@ -70,6 +71,7 @@ resource "juju_application" "temporal_admin_k8s" {
   charm {
     name = "temporal-admin-k8s"
   }
+  constraints = "arch=${var.arch} tags=${var.tags}"
 }
 
 resource "juju_integration" "temporal_admin" {
@@ -94,6 +96,7 @@ resource "juju_application" "temporal_k8s_ui" {
   charm {
     name = "temporal-ui-k8s"
   }
+  constraints = "arch=${var.arch} tags=${var.tags}"
 }
 
 resource "juju_integration" "temporal_ui" {

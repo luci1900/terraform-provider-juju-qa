@@ -26,7 +26,7 @@ resource "juju_application" "source" {
     token = "abc"
   }
 
-  constraints = "tags=${var.shared_tags},${var.physical_tags}"
+  constraints = "arch=${var.arch} tags=${var.tags}"
 }
 
 resource "juju_offer" "source" {

@@ -18,6 +18,7 @@ resource "juju_application" "openfga" {
     channel = "latest/edge"
     base    = "ubuntu@22.04"
   }
+  constraints = "arch=${var.arch} tags=${var.tags}"
 }
 
 resource "juju_offer" "openfga" {

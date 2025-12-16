@@ -23,6 +23,7 @@ resource "juju_application" "traefik" {
     external_hostname = ""
     routing_mode      = "path"
   }
+  constraints = "arch=${var.arch} tags=${var.tags}"
 }
 
 resource "juju_offer" "ingress" {

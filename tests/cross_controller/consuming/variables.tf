@@ -1,11 +1,11 @@
-variable "shared_tags" {
+variable "tags" {
     type        = string
-    description = "Shared tags for all app constraints"
-    default    = "juju"
+    description = "Tags for all app constraints, including for physical machines"
+    default    = ""
 }
 
-variable "physical_tags" {
+variable "arch" {
     type        = string
-    description = "Tags for app constraints intended for physical machines"
-    default     = ""
+    description = "CPU architecture for app constraints"
+    default     = "arm64"
 }

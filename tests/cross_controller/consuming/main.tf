@@ -59,7 +59,7 @@ resource "juju_application" "sink" {
     name    = "juju-qa-dummy-sink"
   }
 
-  constraints = "tags=${var.shared_tags},${var.physical_tags}"
+  constraints = "arch=${var.arch} tags=${var.tags}"
 }
 
 resource "juju_integration" "sink-source" {

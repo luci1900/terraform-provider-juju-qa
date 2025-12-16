@@ -1,9 +1,10 @@
 .PHONY: test clean
 
 run ?= ".*"
+arch ?= "amd64"
 
 test:
-	go test -v -count=1 -timeout=1h -run "TestQA_$(run)" ./...
+	TF_VAR_arch="$(arch)" go test -v -count=1 -timeout=1h -run "TestQA_$(run)" ./...
 
 clean:
 	find . -name "terraform.tfstate*" -delete
