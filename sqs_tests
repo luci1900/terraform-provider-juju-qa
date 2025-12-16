@@ -8,11 +8,13 @@ go install github.com/tebeka/go2xunit@v1.4.10
 juju add-cloud --client --file ./tmp/maas_cloud.yaml 
 juju add-credential --client --file ./tmp/maas_credentials.yaml maas-cloud
 
-juju bootstrap --credential maas-credential --constraints tags="juju,sqa-dh1_j8_2" maas-cloud tfqa
-juju bootstrap --credential maas-credential --constraints tags="juju,sqa-dh1_j8_2" maas-cloud tfqa-offering
+TAGS="juju,sqa-dh1_j8_2"
+
+juju bootstrap --credential maas-credential --constraints tags="$TAGS" maas-cloud tfqa
+juju bootstrap --credential maas-credential --constraints tags="$TAGS" maas-cloud tfqa-offering
 
 trap 'juju kill-controller --no-prompt tfqa-offering && juju kill-controller --no-prompt tfqa' EXIT
 
-TF_VAR_arch=amd64 TF_VAR_tags="juju,sqa-dh1_j8_2" go test -v -timeout=4h -run=TestQA_Minimal ./... |& tee test_results.raw
+TF_VAR_arch=amd64 TF_VAR_tags="$TAGS" go test -v -timeout=4h -run=TestQA_Minimal ./... |& tee test_results.raw
 
 ~/go/bin/go2xunit -input test_results.raw -output test_results.xml
