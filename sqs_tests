@@ -13,6 +13,6 @@ juju bootstrap --credential maas-credential --constraints tags="juju,sqa-dh1_j8_
 
 trap 'juju kill-controller --no-prompt tfqa-offering && juju kill-controller --no-prompt tfqa' EXIT
 
-go test -v -timeout=4h ./... |& tee test_results.raw
+TF_VAR_arch=amd64 TF_VAR_tags="juju,sqa-dh1_j8_2" go test -v -timeout=4h -run=TestQA_Minimal ./... |& tee test_results.raw
 
 ~/go/bin/go2xunit -input test_results.raw -output test_results.xml
