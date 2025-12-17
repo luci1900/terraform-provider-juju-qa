@@ -8,7 +8,7 @@ go install github.com/tebeka/go2xunit@v1.4.10
 juju add-cloud --client --file ./tmp/maas_cloud.yaml 
 juju add-credential --client --file ./tmp/maas_credentials.yaml maas-cloud
 
-TAGS="juju,sqa-dh1_j8_2"
+TAGS="juju,$1"
 
 juju bootstrap --credential maas-credential --constraints tags="$TAGS" maas-cloud tfqa
 juju bootstrap --credential maas-credential --constraints tags="$TAGS" maas-cloud tfqa-offering
