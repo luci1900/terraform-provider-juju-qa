@@ -10,7 +10,7 @@ import (
 
 func TestQA_Minimal(t *testing.T) {
 	// arrange
-	info := utils.GetControllerInfo(t, utils.DefaultControllerName)
+	info := utils.GetMainControllerInfo(t)
 
 	tfOpts := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: ".",

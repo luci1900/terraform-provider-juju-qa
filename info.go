@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -113,6 +114,15 @@ func GetControllerInfo(t *testing.T, controllerName string) ControllerInfo {
 		CACert:    showCtrl[controllerName].Details.CACert,
 		CloudType: cloudType,
 	}
+}
+
+func GetMainControllerInfo(t *testing.T) ControllerInfo {
+	controllerName := DefaultControllerName
+	if envCtrlname := os.Getenv("TF_JUJU_QA_CTRL"); envCtrlname != "" {
+		controllerName = envCtrlname
+		fmt.Printf("%s\n", envCtrlname)
+	}
+	return GetControllerInfo(t, controllerName)
 }
 
 func (i ControllerInfo) Env() map[string]string {
