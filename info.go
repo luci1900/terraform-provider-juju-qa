@@ -11,6 +11,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+const defaultMainControllerName = "tfqa"
+const defaultOfferingControllerName = "tfqa-offering"
+
 type ControllerInfo struct {
 	Name      string
 	Addresses string
@@ -117,8 +120,17 @@ func GetControllerInfo(t *testing.T, controllerName string) ControllerInfo {
 }
 
 func GetMainControllerInfo(t *testing.T) ControllerInfo {
-	controllerName := DefaultControllerName
+	controllerName := defaultMainControllerName
 	if envCtrlname := os.Getenv("TF_JUJU_QA_CTRL"); envCtrlname != "" {
+		controllerName = envCtrlname
+		fmt.Printf("%s\n", envCtrlname)
+	}
+	return GetControllerInfo(t, controllerName)
+}
+
+func GetOfferingControllerInfo(t *testing.T) ControllerInfo {
+	controllerName := defaultOfferingControllerName
+	if envCtrlname := os.Getenv("TF_JUJU_QA_OFFERING_CTRL"); envCtrlname != "" {
 		controllerName = envCtrlname
 		fmt.Printf("%s\n", envCtrlname)
 	}

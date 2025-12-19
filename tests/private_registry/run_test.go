@@ -11,7 +11,7 @@ import (
 )
 
 func TestQA_PrivateRegistry(t *testing.T) {
-	info := utils.GetControllerInfo(t, utils.DefaultControllerName)
+	info := utils.GetMainControllerInfo(t)
 	if info.CloudType != "k8s" {
 		t.Skip("Skipping test on non-k8s cloud")
 	}

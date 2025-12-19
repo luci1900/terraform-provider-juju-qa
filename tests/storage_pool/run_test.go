@@ -9,7 +9,7 @@ import (
 )
 
 func TestQA_StoragePool(t *testing.T) {
-	info := utils.GetControllerInfo(t, utils.DefaultControllerName)
+	info := utils.GetMainControllerInfo(t)
 	if info.CloudType != "k8s" {
 		t.Skip("Skipping test on non-k8s cloud")
 	}
@@ -30,7 +30,7 @@ func TestQA_StoragePool(t *testing.T) {
 	modelName := terraform.Output(t, tfOpts, "model_name")
 	cmd := exec.Command(
 		"juju", "switch",
-		modelName,
+		info.Name+":"+modelName,
 	)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
