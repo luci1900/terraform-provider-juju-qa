@@ -28,7 +28,7 @@ func TestQA_Minimal(t *testing.T) {
 
 	cmd := exec.Command(
 		"juju", "switch",
-		"tfqa:"+modelName,
+		info.Name+":"+modelName,
 	)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
