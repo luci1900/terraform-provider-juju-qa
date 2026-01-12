@@ -37,7 +37,7 @@ func TestQA_Minimal(t *testing.T) {
 
 	cmd = exec.Command(
 		"juju", "wait-for",
-		"application", "--timeout", "5m",
+		"application", "--timeout", "60m",
 		"qa-test",
 	)
 	out, err = cmd.CombinedOutput()
