@@ -5,8 +5,36 @@ sudo snap install go --classic
 sudo snap install terraform --classic
 go install github.com/tebeka/go2xunit@v1.4.10
 
-echo $(maas list)
+# MAAS credentials
+output=$(maas list)
+creds=$( output )
+api_name=${creds[0]}
+api_url=${creds[1]}
+api_key=${creds[2]}
 
-#TF_JUJU_QA_CTRL="juju-maas-controller" TF_VAR_arch="amd64" TF_VAR_tags="juju,$1" go test -v -timeout=4h -run=TestQA_Minimal ./... |& tee test_results.raw
+cat > "./creds.yaml" << EOF
+credentials:
+    maas-cloud:
+        maas-creds:
+            auth-type: oauth1
+            maas-oauth: $api_key
+EOF
 
-#~/go/bin/go2xunit -input test_results.raw -output test_results.xml
+cat > "./clouds.yaml" << EOF
+clouds:
+    maas-cloud:
+        type: maas
+        auth-types: [oauth1]
+        endpoint: $api_url
+EOF
+
+juju add-cloud --client --file ./clouds.yaml
+juju add-credential --client --file ./creds.yaml maas-cloud
+
+juju bootstrap --credential maas-creds maas-cloud tfqa --constraints="juju,$1"
+
+TF_JUJU_QA_CTRL="juju-maas-controller" TF_VAR_arch="amd64" TF_VAR_tags="juju,$1" go test -v -timeout=4h -run=TestQA_Minimal ./... |& tee test_results.raw
+
+juju destroy-controller --yes --destroy-all-models --client tfqa
+
+~/go/bin/go2xunit -input test_results.raw -output test_results.xml
