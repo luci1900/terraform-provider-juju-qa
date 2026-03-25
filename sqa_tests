@@ -6,11 +6,7 @@ sudo snap install terraform --classic
 go install github.com/tebeka/go2xunit@v1.4.10
 
 # MAAS credentials
-output=$(maas list)
-creds=$( output )
-api_name=${creds[0]}
-api_url=${creds[1]}
-api_key=${creds[2]}
+read -r api_name api_url api_key <<< "$(maas list)"
 
 cat > "./creds.yaml" << EOF
 credentials:
