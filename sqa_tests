@@ -30,7 +30,7 @@ EOF
 juju add-credential --client --file ./creds.yaml maas-cloud
 trap "rm -f ./creds.yaml" EXIT
 
-juju bootstrap --credential maas-creds maas-cloud tfqa --constraints "tags=juju,$1"juju destroy-controller --no-prompt --destroy-all-models tfqa
+juju bootstrap --credential maas-creds maas-cloud tfqa --constraints "tags=juju,$1"
 trap "juju destroy-controller --no-prompt --destroy-all-models tfqa" EXIT
 
 TF_JUJU_QA_CTRL="tfqa" TF_VAR_arch="amd64" TF_VAR_tags="juju,$1" go test -v -timeout=4h -run=TestQA_Minimal ./... |& tee test_results.raw
