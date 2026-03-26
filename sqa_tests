@@ -31,6 +31,6 @@ juju bootstrap --credential maas-creds maas-cloud tfqa --constraints "tags=juju,
 
 TF_JUJU_QA_CTRL="juju-maas-controller" TF_VAR_arch="amd64" TF_VAR_tags="juju,$1" go test -v -timeout=4h -run=TestQA_Minimal ./... |& tee test_results.raw
 
-juju destroy-controller --yes --destroy-all-models --client tfqa
+juju destroy-controller --no-prompt --destroy-all-models tfqa
 
 #~/go/bin/go2xunit -input test_results.raw -output test_results.xml
