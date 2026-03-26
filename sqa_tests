@@ -8,8 +8,6 @@ go install github.com/tebeka/go2xunit@v1.4.10
 # MAAS credentials
 read -r api_name api_url api_key <<< "$(maas list)"
 
-
-
 cat > "./clouds.yaml" << EOF
 clouds:
     maas-cloud:
@@ -33,6 +31,7 @@ trap "rm -f ./creds.yaml" EXIT
 juju bootstrap --credential maas-creds maas-cloud tfqa --constraints "tags=juju,$1"
 trap "juju destroy-controller --no-prompt --destroy-all-models tfqa" EXIT
 
+# Actually run tests
 TF_JUJU_QA_CTRL="tfqa" TF_VAR_arch="amd64" TF_VAR_tags="juju,$1" go test -v -timeout=4h -run=TestQA_Minimal ./... |& tee test_results.raw
 
 ~/go/bin/go2xunit -input test_results.raw -output test_results.xml
