@@ -8,13 +8,7 @@ go install github.com/tebeka/go2xunit@v1.4.10
 # MAAS credentials
 read -r api_name api_url api_key <<< "$(maas list)"
 
-cat > "./creds.yaml" << EOF
-credentials:
-    maas-cloud:
-        maas-creds:
-            auth-type: oauth1
-            maas-oauth: $api_key
-EOF
+
 
 cat > "./clouds.yaml" << EOF
 clouds:
@@ -23,14 +17,22 @@ clouds:
         auth-types: [oauth1]
         endpoint: $api_url
 EOF
-
 juju add-cloud --client --file ./clouds.yaml
-juju add-credential --client --file ./creds.yaml maas-cloud
+trap "rm -f ./clouds.yaml" EXIT
 
-juju bootstrap --credential maas-creds maas-cloud tfqa --constraints "tags=juju,$1"
+cat > "./creds.yaml" << EOF
+credentials:
+    maas-cloud:
+        maas-creds:
+            auth-type: oauth1
+            maas-oauth: $api_key
+EOF
+juju add-credential --client --file ./creds.yaml maas-cloud
+trap "rm -f ./creds.yaml" EXIT
+
+juju bootstrap --credential maas-creds maas-cloud tfqa --constraints "tags=juju,$1"juju destroy-controller --no-prompt --destroy-all-models tfqa
+trap "juju destroy-controller --no-prompt --destroy-all-models tfqa" EXIT
 
 TF_JUJU_QA_CTRL="juju-maas-controller" TF_VAR_arch="amd64" TF_VAR_tags="juju,$1" go test -v -timeout=4h -run=TestQA_Minimal ./... |& tee test_results.raw
-
-juju destroy-controller --no-prompt --destroy-all-models tfqa
 
 ~/go/bin/go2xunit -input test_results.raw -output test_results.xml
