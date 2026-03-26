@@ -3,7 +3,7 @@ set -ex
 
 sudo snap install go --classic
 sudo snap install terraform --classic
-#go install github.com/tebeka/go2xunit@v1.4.10
+go install github.com/tebeka/go2xunit@v1.4.10
 
 # MAAS credentials
 read -r api_name api_url api_key <<< "$(maas list)"
@@ -33,4 +33,4 @@ TF_JUJU_QA_CTRL="juju-maas-controller" TF_VAR_arch="amd64" TF_VAR_tags="juju,$1"
 
 juju destroy-controller --no-prompt --destroy-all-models tfqa
 
-#~/go/bin/go2xunit -input test_results.raw -output test_results.xml
+~/go/bin/go2xunit -input test_results.raw -output test_results.xml
