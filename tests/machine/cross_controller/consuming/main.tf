@@ -40,7 +40,7 @@ provider "juju" {
 
 module "model" {
   topic = "cross-controller"
-  source = "../../../modules/model_random"
+  source = "../../../../modules/model_random"
 }
 
 output "model_name" {

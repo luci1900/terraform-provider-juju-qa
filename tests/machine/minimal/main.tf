@@ -12,7 +12,7 @@ provider "juju" {
 
 module "model" {
   topic = "minimal"
-  source = "../../modules/model_random"
+  source = "../../../modules/model_random"
 }
 
 output "model_name" {
