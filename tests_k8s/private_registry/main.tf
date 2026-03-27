@@ -12,7 +12,7 @@ provider "juju" {
 
 module "model" {
   topic = "private-registry"
-  source = "../../../modules/model_random"
+  source = "../../modules/model_random"
 }
 
 output "model_name" {

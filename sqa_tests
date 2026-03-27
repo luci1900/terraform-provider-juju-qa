@@ -38,7 +38,7 @@ trap "juju destroy-controller --no-prompt --destroy-all-models $TF_JUJU_QA_CTRL"
 # juju bootstrap --credential maas-creds maas-cloud $TF_JUJU_QA_OFFERING_CTRL --constraints "tags=juju_upgrade,$1"
 # trap "juju destroy-controller --no-prompt --destroy-all-models $TF_JUJU_QA_OFFERING_CTRL" EXIT
 
-# Actually run tests
-TF_VAR_tags="juju_upgrade,$1" go test -v -timeout=4h -run=TestQA_Minimal ./tests/machine/... |& tee test_results.raw
+# Actually run machine tests
+TF_VAR_tags="juju_upgrade,$1" go test -v -timeout=4h -run=TestQA_Minimal ./tests_machine/... |& tee test_results.raw
 
 ~/go/bin/go2xunit -input test_results.raw -output test_results.xml
