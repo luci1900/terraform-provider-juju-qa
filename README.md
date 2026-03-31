@@ -20,13 +20,14 @@ make run=PrivateRegistry test
 
 ## SolQA cluster
 
-- Go to https://github.com/canonical/terragrunt-deployment-pipelines/actions/workflows/maas_physical.yaml
-- Click "Run workflow".
+- Go to [SolQA TOR3 MAAS workflows](https://github.com/canonical/terragrunt-deployment-pipelines/actions/workflows/maas_physical.yaml)
+- Click `Run workflow`.
 - Pick a cluster, ideally one that doesn't already have a workflow currently running.
-- Pick "solution", since we're bootstrapping our own controllers.
-- Pass in parameters including the repo and branch you want to run
+- Pick `solution`, since we're bootstrapping our own controllers.
+    - `composite` bootstraps a controller for us, but doesn't allow for a second one.
+- Pass in parameters including the repo and branch you want to run.
     - Like `{"repo": "canonical/terraform-provider-juju-qa", "ref": "main"}`
-- Click "Run workflow"
+- Click `Run workflow`.
 
 # Constraints
 
