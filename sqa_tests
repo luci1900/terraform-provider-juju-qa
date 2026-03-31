@@ -41,6 +41,6 @@ trap "juju destroy-controller --no-prompt --destroy-all-models $TF_JUJU_QA_OFFER
 
 # Actually run machine tests
 # Tag name is just for picking machines, doesn't actually have microk8s running
-TF_VAR_tags="microk8s,$CLUSTER_TAG" go test -v -timeout=4h -run=TestQA_Minimal ./tests_machine/... |& tee test_results.raw
+TF_VAR_tags="microk8s,$CLUSTER_TAG" go test -v -timeout=4h ./tests_machine/... |& tee test_results.raw
 
 ~/go/bin/go2xunit -input test_results.raw -output test_results.xml
