@@ -1,7 +1,6 @@
 package qa
 
 import (
-	"os/exec"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -28,22 +27,7 @@ func TestQA_Temporal(t *testing.T) {
 
 	// assert
 	modelName := terraform.Output(t, tfOpts, "model_name")
-	cmd := exec.Command(
-		"juju", "switch",
-		info.Name+":"+modelName,
-	)
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		t.Fatalf("failed juju switch: %s", out)
-	}
 
-	cmd = exec.Command(
-		"juju", "wait-for",
-		"application", "--timeout", "60m",
-		"temporal",
-	)
-	out, err = cmd.CombinedOutput()
-	if err != nil {
-		t.Fatalf("failed juju wait-for: %s", out)
-	}
+	utils.JujuSwitch(t, info.Name+":"+modelName)
+	utils.JujuWaitFor(t, "temporal")
 }
