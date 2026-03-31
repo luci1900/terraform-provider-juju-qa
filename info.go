@@ -174,6 +174,19 @@ func JujuSwitch(t *testing.T, to string) {
 	}
 }
 
+// JujuStatus wraps `juju status --format yaml`
+func JujuStatus(t *testing.T) {
+	cmd := exec.Command(
+		"juju", "status", "--format", "yaml",
+	)
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Fatalf("failed juju status: %s", out)
+	} else {
+		t.Logf("juju status output: \n%s", out)
+	}
+}
+
 // JujuWaitFor wraps `juju wait-for application <app> --timeout 60m`
 // and will log `juju status` on failure
 func JujuWaitFor(t *testing.T, application string) {
@@ -184,12 +197,9 @@ func JujuWaitFor(t *testing.T, application string) {
 	)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		cmd = exec.Command(
-			"juju", "status", "--format", "yaml",
-		)
-		statusOut, _ := cmd.CombinedOutput()
-		t.Logf("juju status output: \n%s", statusOut)
+		JujuStatus(t)
 
-		t.Fatalf("failed juju wait-for: %s", out)
+		t.Logf("failed juju wait-for: %s", out)
+		t.Fail()
 	}
 }
