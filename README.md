@@ -38,11 +38,11 @@ Every resource (Juju controller, application, etc.) must have tags attached to e
 Tags look like `category,cluster`, as an example: `juju_upgrade,sqa-dh1_j8_1`.
 
 Tag inventory summary:
-- `juju` (virtual, for a controller) 
-- `juju_upgrade` (virtual, for a controller)
-- `microk8s` (virtual)
-- `vault` (virtual)
-- `foundation-nodes` (metal)
+- `juju` 3 machines (virtual, for a controller)
+- `juju_upgrade` 3 machines (virtual, for a controller)
+- `microk8s` 3 machines (virtual)
+- `vault` 3 machines (virtual)
+- `foundation-nodes` 9 machines (metal)
 
 ## Arch
 
