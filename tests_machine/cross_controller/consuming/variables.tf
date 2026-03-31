@@ -7,5 +7,5 @@ variable "tags" {
 variable "arch" {
     type        = string
     description = "CPU architecture for app constraints"
-    default     = "arm64"
+    default     = "amd64"
 }
