@@ -39,7 +39,7 @@ juju bootstrap --credential maas-creds maas-cloud $TF_JUJU_QA_OFFERING_CTRL --co
 trap "juju destroy-controller --no-prompt --destroy-all-models $TF_JUJU_QA_OFFERING_CTRL" EXIT
 
 # Actually run machine tests
-# Tag name is just for picking machines, doesn't actually have microk8s running
-TF_VAR_tags="microk8s,$CLUSTER_TAG" TF_VAR_arch="amd64" go test -v -timeout=4h ./tests_machine/... |& tee test_results.raw
+# Tag name is just for picking machines, doesn't actually have vault running
+TF_VAR_tags="vault,$CLUSTER_TAG" TF_VAR_arch="amd64" go test -v -timeout=4h ./tests_machine/... |& tee test_results.raw
 
 ~/go/bin/go2xunit -input test_results.raw -output test_results.xml
