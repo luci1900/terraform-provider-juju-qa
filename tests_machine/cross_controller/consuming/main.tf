@@ -39,7 +39,7 @@ provider "juju" {
 }
 
 module "model" {
-  topic = "private-registry"
+  topic = "cross-controller"
   source = "../../../modules/model_random"
 }
 

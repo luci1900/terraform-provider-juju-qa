@@ -1,10 +1,46 @@
 #!/bin/bash
 set -ex
 
+TF_VAR_arch="amd64"
+TF_JUJU_QA_CTRL="tfqa"
+TF_JUJU_QA_OFFERING_CTRL="tfqa-offering"
+CLUSTER_TAG="sqa-$CLUSTER"
+
 sudo snap install go --classic
 sudo snap install terraform --classic
 go install github.com/tebeka/go2xunit@v1.4.10
 
-TF_JUJU_QA_CTRL="juju-maas-controller" TF_VAR_arch="amd64" TF_VAR_tags="juju,$1" go test -v -timeout=4h -run=TestQA_Minimal ./... |& tee test_results.raw
+# MAAS credentials
+read -r api_name api_url api_key <<< "$(maas list)"
+
+cat > "./clouds.yaml" << EOF
+clouds:
+    maas-cloud:
+        type: maas
+        auth-types: [oauth1]
+        endpoint: $api_url
+EOF
+juju add-cloud --client --file ./clouds.yaml
+trap "rm -f ./clouds.yaml" EXIT
+
+cat > "./creds.yaml" << EOF
+credentials:
+    maas-cloud:
+        maas-creds:
+            auth-type: oauth1
+            maas-oauth: $api_key
+EOF
+juju add-credential --client --file ./creds.yaml maas-cloud
+trap "rm -f ./creds.yaml" EXIT
+
+juju bootstrap --credential maas-creds maas-cloud $TF_JUJU_QA_CTRL --constraints "tags=juju,$CLUSTER_TAG"
+trap "juju destroy-controller --no-prompt --destroy-all-models $TF_JUJU_QA_CTRL" EXIT
+
+juju bootstrap --credential maas-creds maas-cloud $TF_JUJU_QA_OFFERING_CTRL --constraints "tags=juju_upgrade,$CLUSTER_TAG"
+trap "juju destroy-controller --no-prompt --destroy-all-models $TF_JUJU_QA_OFFERING_CTRL" EXIT
+
+# Actually run machine tests
+# Tag name is just for picking machines, doesn't actually have microk8s running
+TF_VAR_tags="microk8s,$CLUSTER_TAG" go test -v -timeout=4h ./tests_machine/... |& tee test_results.raw
 
 ~/go/bin/go2xunit -input test_results.raw -output test_results.xml
