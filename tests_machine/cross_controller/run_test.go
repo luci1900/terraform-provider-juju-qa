@@ -53,6 +53,11 @@ func TestQA_CrossController(t *testing.T) {
 	)
 	out, err = cmd.CombinedOutput()
 	if err != nil {
+		cmd = exec.Command(
+			"juju", "status", "--format", "yaml",
+		)
+		statusOut, _ := cmd.CombinedOutput()
+		t.Logf("juju status output:\n%s", statusOut)
 		t.Fatalf("failed juju wait-for: %s", out)
 	}
 }
