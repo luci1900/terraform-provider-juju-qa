@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 	"testing"
 
@@ -51,6 +52,7 @@ type accountsFile struct {
 	Controllers map[string]ctrlCredentials `yaml:"controllers"`
 }
 
+// GetCurrentControllerName returns the name of the CLI's current controller
 func GetCurrentControllerName(t *testing.T) string {
 	out := shell.RunCommandAndGetOutput(t, shell.Command{
 		Command: "juju",
@@ -65,6 +67,7 @@ func GetCurrentControllerName(t *testing.T) string {
 	return whoami.Controller
 }
 
+// GetControllerInfo returns connection info for the given controller name
 func GetControllerInfo(t *testing.T, controllerName string) ControllerInfo {
 	out := shell.RunCommandAndGetOutput(t, shell.Command{
 		Command: "juju",
@@ -119,6 +122,7 @@ func GetControllerInfo(t *testing.T, controllerName string) ControllerInfo {
 	}
 }
 
+// GetMainControllerInfo returns connection info for the main controller
 func GetMainControllerInfo(t *testing.T) ControllerInfo {
 	controllerName := defaultMainControllerName
 	if envCtrlname := os.Getenv("TF_JUJU_QA_CTRL"); envCtrlname != "" {
@@ -128,6 +132,7 @@ func GetMainControllerInfo(t *testing.T) ControllerInfo {
 	return GetControllerInfo(t, controllerName)
 }
 
+// GetOfferingControllerInfo returns connection info for the offering controller
 func GetOfferingControllerInfo(t *testing.T) ControllerInfo {
 	controllerName := defaultOfferingControllerName
 	if envCtrlname := os.Getenv("TF_JUJU_QA_OFFERING_CTRL"); envCtrlname != "" {
@@ -137,6 +142,7 @@ func GetOfferingControllerInfo(t *testing.T) ControllerInfo {
 	return GetControllerInfo(t, controllerName)
 }
 
+// Env returns controller info as a map of env vars
 func (i ControllerInfo) Env() map[string]string {
 	return map[string]string{
 		"JUJU_CONTROLLER_ADDRESSES": i.Addresses,
@@ -146,6 +152,7 @@ func (i ControllerInfo) Env() map[string]string {
 	}
 }
 
+// OfferingVars returns controller info as a map of terraform vars
 func (i ControllerInfo) OfferingVars() map[string]any {
 	return map[string]any{
 		"offering_controller_name":      i.Name,
@@ -153,5 +160,46 @@ func (i ControllerInfo) OfferingVars() map[string]any {
 		"offering_controller_username":  i.Username,
 		"offering_controller_password":  i.Password,
 		"offering_controller_ca_cert":   i.CACert,
+	}
+}
+
+// JujuSwitch wraps `juju switch`
+func JujuSwitch(t *testing.T, to string) {
+	cmd := exec.Command(
+		"juju", "switch", to,
+	)
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Fatalf("failed juju switch: %s", out)
+	}
+}
+
+// JujuStatus wraps `juju status --format yaml`
+func JujuStatus(t *testing.T) {
+	cmd := exec.Command(
+		"juju", "status", "--format", "yaml",
+	)
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Fatalf("failed juju status: %s", out)
+	} else {
+		t.Logf("juju status output: \n%s", out)
+	}
+}
+
+// JujuWaitFor wraps `juju wait-for application <app> --timeout 60m`
+// and will log `juju status` on failure
+func JujuWaitFor(t *testing.T, application string) {
+	cmd := exec.Command(
+		"juju", "wait-for",
+		"application", "--timeout", "60m",
+		application,
+	)
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		JujuStatus(t)
+
+		t.Logf("failed juju wait-for: %s", out)
+		t.Fail()
 	}
 }

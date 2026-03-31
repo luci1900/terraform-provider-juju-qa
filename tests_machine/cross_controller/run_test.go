@@ -1,7 +1,6 @@
 package qa
 
 import (
-	"os/exec"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -35,24 +34,13 @@ func TestQA_CrossController(t *testing.T) {
 	terraform.InitAndApply(t, consumingTfOpts)
 
 	// assert
-	modelName := terraform.Output(t, consumingTfOpts, "model_name")
+	consumingModelName := terraform.Output(t, consumingTfOpts, "model_name")
+	offeringModelName := terraform.Output(t, offeringTfOpts, "model_name")
 
-	cmd := exec.Command(
-		"juju", "switch",
-		consumingInfo.Name+":"+modelName,
-	)
-	out, err := cmd.CombinedOutput()
-	if err != nil {
-		t.Fatalf("failed juju switch: %s", out)
-	}
+	utils.JujuSwitch(t, consumingInfo.Name+":"+consumingModelName)
+	utils.JujuWaitFor(t, "dummy-sink")
 
-	cmd = exec.Command(
-		"juju", "wait-for",
-		"application", "--timeout", "60m",
-		"dummy-sink",
-	)
-	out, err = cmd.CombinedOutput()
-	if err != nil {
-		t.Fatalf("failed juju wait-for: %s", out)
-	}
+	// also look at the other model
+	utils.JujuSwitch(t, offeringInfo.Name+":"+offeringModelName)
+	utils.JujuStatus(t)
 }
